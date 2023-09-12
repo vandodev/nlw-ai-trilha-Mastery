@@ -1,9 +1,11 @@
 import { fastify } from "fastify";
+import { prisma } from "./lib/prisma";
 
 const app = fastify()
 
-app.get('/', () =>{
-    return "olá mundo"
+app.get('/propts', async () =>{
+    const prompts = await prisma.prompt.findMany()
+    return prompts
 })
 
 app.listen({
