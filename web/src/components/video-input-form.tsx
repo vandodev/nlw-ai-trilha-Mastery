@@ -3,13 +3,14 @@ import { Separator } from "./ui/separator";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
-// import { ChangeEvent, FormEvent useRef} from "react";
-import { ChangeEvent, useState, useMemo } from "react";
+// import { ChangeEvent } from "react";
+import { ChangeEvent, useState, useMemo, FormEvent, useRef } from "react";
 
 
 export function VideoInputForm(){
 
     const [videoFile, setVideoFile] = useState<File | null>(null)
+    const promptInputRef = useRef<HTMLTextAreaElement>(null)
 
     function handleFileSelected(event: ChangeEvent<HTMLInputElement>) {
         const { files } = event.currentTarget
@@ -31,8 +32,19 @@ export function VideoInputForm(){
         return URL.createObjectURL(videoFile)
       }, [videoFile])
 
+      async function handleUploadVideo(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault()
+    
+        const prompt = promptInputRef.current?.value
+    
+        if (!videoFile) {
+          return
+        }
+      }
+    
+
     return(
-        <form className="space-y-6">
+        <form onSubmit={handleUploadVideo} className="space-y-6">
         <label
           htmlFor="video"
           className="relative border flex rounded-md aspect-video cursor-pointer border-dashed text-sm flex-col gap-2 items-center justify-center text-muted-foreground hover:bg-primary/5"
@@ -54,6 +66,7 @@ export function VideoInputForm(){
         <div className="space-y-2">
           <Label htmlFor="transcription_prompt">Prompt de transcrição</Label>
           <Textarea
+            ref={promptInputRef}
             id="transcription_prompt"
             className="h-20 leading-relaxed resize-none"
             placeholder="Inclua palavras-chave mencionadas no vídeo separadas por vírgula (,)"
