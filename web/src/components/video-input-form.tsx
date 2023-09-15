@@ -93,6 +93,10 @@ export function VideoInputForm(){
         console.log(response.data)
         const videoId = response.data.video.id
 
+        await api.post(`/videos/${videoId}/transcription`, {
+          prompt,
+        })
+
       }
     
 
